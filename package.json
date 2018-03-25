@@ -1,0 +1,25 @@
+{
+  "name": "i18n-yandex-json",
+  "version": "0.0.1",
+  "description": "Convert JSON i18n files via the yandex api for quick internationalization testing",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/mobinni/i18n-yandex-json.git"
+  },
+  "keywords": [
+    "yandex",
+    "i18n",
+    "json",
+    "translate"
+  ],
+  "author": "Mo Binni",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mobinni/i18n-yandex-json/issues"
+  },
+  "homepage": "https://github.com/mobinni/i18n-yandex-json#readme"
+}
