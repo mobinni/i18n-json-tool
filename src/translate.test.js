@@ -36,12 +36,20 @@ describe("Translation test suite", () => {
     });
 
     it("should build a url for each string", () => {
-        const results = buildEndpoints(apiKey, "en", en);
+        const results = buildEndpoints({
+            apiKey,
+            isoCode: "en",
+            translations: en
+        });
         expect(results).toHaveLength(3);
     });
 
     it("should translate a string from yandex", async () => {
-        const endpoints = buildEndpoints(apiKey, "nl", en);
+        const endpoints = buildEndpoints({
+            apiKey,
+            isoCode: "nl",
+            translations: en
+        });
 
         expect(translate(endpoints[0])).resolves.toEqual({ key: "Wereld" });
         expect(translate(endpoints[1])).resolves.toEqual({ key2: "Voetbal" });
