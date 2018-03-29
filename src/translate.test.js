@@ -3,7 +3,8 @@ import { extractKeys } from "./utils";
 import translateAll, {
     verifyISOCode,
     buildEndpoint,
-    translate
+    translate,
+    findInterpolationInstances
 } from "./translate";
 
 describe("Translation test suite", () => {
@@ -49,5 +50,16 @@ describe("Translation test suite", () => {
         expect(results).toEqual([
             { key: "Wereld", key2: "Voetbal", key3: "Vandaag is een mooie dag" }
         ]);
+    });
+    it("should find all instances of a regex-bound interface in a string", () => {
+        expect(
+            findInterpolationInstances(/{{.*}}/g, "string with {{string}}")
+        ).toEqual([{ index: 22, value: "{{string}}" }]);
+        expect(
+            findInterpolationInstances(
+                /{{.*}}/g,
+                "{{thing}} string with {{string}}"
+            )
+        ).toEqual([{ index: 32, value: "{{thing}} string with {{string}}" }]);
     });
 });
