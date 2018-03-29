@@ -17,6 +17,7 @@ export const translate = async ({ key, url }) =>
 export default async ({ apiKey, isoCode, translations }) => {
     if (!verifyISOCode(isoCode))
         return Promise.reject(new Error("Please supply a valid iso code"));
+        
     const endpoints = pipe(
         extractKeys,
         map(key => ({
