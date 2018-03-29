@@ -2,7 +2,7 @@ import environment from "dotenv";
 import { extractKeys } from "./utils";
 import translateAll, {
     verifyISOCode,
-    buildEndpoints,
+    buildEndpoint,
     translate
 } from "./translate";
 
@@ -34,28 +34,10 @@ describe("Translation test suite", () => {
     it("should error if an iso code is invalid", () => {
         expect(verifyISOCode(invalidCode)).toEqual(false);
     });
-
-    it("should build a url for each string", () => {
-        const results = buildEndpoints({
-            apiKey,
-            isoCode: "en",
-            translations: en
-        });
-        expect(results).toHaveLength(3);
-    });
-
     it("should translate a string from yandex", async () => {
-        const endpoints = buildEndpoints({
-            apiKey,
-            isoCode: "nl",
-            translations: en
-        });
-
-        expect(translate(endpoints[0])).resolves.toEqual({ key: "Wereld" });
-        expect(translate(endpoints[1])).resolves.toEqual({ key2: "Voetbal" });
-        expect(translate(endpoints[2])).resolves.toEqual({
-            key3: "Vandaag is een mooie dag"
-        });
+        expect(
+            translate({ key: "key", url: buildEndpoint(apiKey, "nl", en.key) })
+        ).resolves.toEqual({ key: "Wereld" });
     });
 
     it("should translate a file from yandex", async () => {
