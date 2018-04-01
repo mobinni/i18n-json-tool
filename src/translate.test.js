@@ -4,7 +4,8 @@ import translateAll, {
     verifyISOCode,
     buildEndpoint,
     translate,
-    findInterpolationInstances
+    findInterpolations,
+    replaceInterpolations
 } from "./translate";
 
 describe("Translation test suite", () => {
@@ -14,7 +15,8 @@ describe("Translation test suite", () => {
     const en = {
         key: "World",
         key2: "Soccer",
-        key3: "Today is a nice day"
+        key3: "Today is a nice day {{random}}",
+        difficult: "The {{number}} of winners = {{output}}"
     };
     beforeAll(() => {
         const config = environment.config();
@@ -27,7 +29,7 @@ describe("Translation test suite", () => {
         apiKey = env.YANDEX_API_KEY;
     });
     it("should extract the keys of a given object", () => {
-        expect(extractKeys(en)).toEqual(["key", "key2", "key3"]);
+        expect(extractKeys(en)).toEqual(["key", "key2", "key3", "difficult"]);
     });
     it("should verify if an iso code is valid", () => {
         expect(verifyISOCode(isoCode)).toEqual(true);
@@ -45,21 +47,61 @@ describe("Translation test suite", () => {
         const results = await translateAll({
             apiKey,
             isoCode: "nl",
-            translations: en
+            translations: en,
+            regexp: /{{([^}]+?)}}/g
         });
         expect(results).toEqual([
-            { key: "Wereld", key2: "Voetbal", key3: "Vandaag is een mooie dag" }
+            {
+                key: "Wereld",
+                key2: "Voetbal",
+                key3: "Vandaag is een mooie dag {{random}}",
+                difficult: "De {{number}} winnaars = {{output}}"
+            }
         ]);
     });
     it("should find all instances of a regex-bound interface in a string", () => {
         expect(
-            findInterpolationInstances(/{{.*}}/g, "string with {{string}}")
-        ).toEqual([{ index: 22, value: "{{string}}" }]);
+            findInterpolations(/{{([^}]+?)}}/g)({
+                key: "key",
+                phrase: "string with {{string}}"
+            })
+        ).toEqual({
+            interpolations: [{ index: 22, value: "{{string}}" }],
+            key: "key",
+            phrase: "string with {{string}}"
+        });
         expect(
-            findInterpolationInstances(
-                /{{.*}}/g,
-                "{{thing}} string with {{string}}"
-            )
-        ).toEqual([{ index: 32, value: "{{thing}} string with {{string}}" }]);
+            findInterpolations(/{{([^}]+?)}}/g)({
+                key: "key",
+                phrase: "{{thing}} string with {{string}}"
+            })
+        ).toEqual({
+            interpolations: [
+                { index: 9, value: "{{thing}}" },
+                { index: 32, value: "{{string}}" }
+            ],
+            key: "key",
+            phrase: "{{thing}} string with {{string}}"
+        });
+    });
+
+    it("should replace all instances of a regex-bound interface in a string", () => {
+        expect(
+            replaceInterpolations("$$$")({
+                interpolations: [
+                    { index: 9, value: "{{thing}}" },
+                    { index: 32, value: "{{string}}" }
+                ],
+                key: "key",
+                phrase: "{{thing}} string with {{string}}"
+            })
+        ).toEqual({
+            interpolations: [
+                { index: 9, value: "{{thing}}" },
+                { index: 32, value: "{{string}}" }
+            ],
+            key: "key",
+            phrase: "$$$ string with $$$"
+        });
     });
 });
