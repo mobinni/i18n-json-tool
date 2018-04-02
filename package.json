@@ -1,7 +1,8 @@
 {
     "name": "i18n-json-tool",
     "version": "0.0.9",
-    "description": "Convert JSON i18n files via the yandex api for quick internationalization testing",
+    "description":
+        "Convert JSON i18n files via the yandex api for quick internationalization testing",
     "main": "lib/library.js",
     "engines": {
         "node": ">=9.0.0"
@@ -21,12 +22,7 @@
         "type": "git",
         "url": "git+ssh://git@github.com/mobinni/i18n-yandex-json.git"
     },
-    "keywords": [
-        "yandex",
-        "i18n",
-        "json",
-        "translate"
-    ],
+    "keywords": ["yandex", "i18n", "json", "translate"],
     "author": "Mo Binni",
     "license": "MIT",
     "bugs": {
@@ -37,8 +33,7 @@
         "babel-register": "^6.26.0",
         "commander": "^2.15.1",
         "isomorphic-fetch": "^2.2.1",
-        "ramda": "^0.25.0",
-        "window-shim": "^1.0.0"
+        "ramda": "^0.25.0"
     },
     "devDependencies": {
         "babel-cli": "^6.26.0",
