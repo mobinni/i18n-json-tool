@@ -6,10 +6,6 @@ Currently it supports:
 
 *   Yandex Translation API
 
-# CLI Requirements
-
-*   node v9.0.0 or higher
-
 # Examples
 
 **CLI Usage**
