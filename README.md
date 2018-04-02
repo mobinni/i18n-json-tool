@@ -33,7 +33,7 @@ translate ./example/en.json -i node -k <key> -r "{{([^}]+?)}}"
 
 **Web Usage**
 ```javascript
-import translate from "i18n-translate-tool";
+import translate from "i18n-json-tool";
 const translations = {
     key1: "Hello world!"
 };
