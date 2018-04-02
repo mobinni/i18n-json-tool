@@ -1,10 +1,54 @@
 # Description
-A tool that translates strings from a json format through the yandex api.
 
-# Architecture
-The translation module is an isomorphic tool that leverages fetch, you must supply your own API key.
+i18n-translate-tool was built out of the necessity to leverage internationalization before the copywriters are done translating your strings. It allows you to leverage either a CLI interface, or translate on the fly within your app returning you a JSON copy of whatever you give it.
 
-# CLI Example
+Currently it supports:
+
+*   Yandex Translation API
+
+# CLI Requirements
+
+*   node v9.0.0 or higher
+
+# Examples
+
+**CLI Usage**
+
 ```
-translate ./example/en.json -i nl -k <key> -r "{{([^}]+?)}}"
+  Usage: translate [options] <file>
+
+  Options:
+
+    -k, --key <key>            Yandex API key
+    -i, --iso <code>           isoCode to translate to
+    -r, --regexp <expression>  regular expression to filter interpolations
+    -h, --help                 output usage information
 ```
+
+example execution
+
+```
+translate ./example/en.json -i node -k <key> -r "{{([^}]+?)}}"
+```
+
+**Web Usage**
+```javascript
+import translate from "i18n-translate-tool";
+const translations = {
+    key1: "Hello world!"
+};
+translate({
+    apiKey,
+    isoCode: "nl",
+    translations,
+    regexp // optional
+}).then(results => console.log(results));
+```
+# Roadmap
+- Add support for google translate API
+- Create website example for translating through an interface
+
+# Contributing
+Please feel free to open any tickets with feature requests but make sure to document:
+- Use case
+- Reasoning
