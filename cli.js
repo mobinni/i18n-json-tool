@@ -1,7 +1,7 @@
 const program = require("commander");
 const path = require("path");
 const fs = require("fs");
-import translate from "./src/translate";
+const translate = require("./cli/translate").default;
 
 program
     .arguments("<file>")
