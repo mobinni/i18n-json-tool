@@ -22,6 +22,7 @@ program
                 translations,
                 regexp
             });
+            
             fs.writeFile(
                 path.dirname(filePath) + path.join(`/${isoCode}.json`),
                 JSON.stringify(result)

@@ -1,6 +1,6 @@
 {
-    "name": "i18n-yandex-json",
-    "version": "0.0.5",
+    "name": "i18n-json-tool",
+    "version": "0.0.8",
     "description": "Convert JSON i18n files via the yandex api for quick internationalization testing",
     "main": "lib/library.js",
     "engines": {
