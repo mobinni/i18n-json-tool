@@ -32,6 +32,7 @@ jobs:
             - cli.js
             - index.js
             - package.json
+            - .babelrc
   deploy:
     <<: *defaults
     steps:
