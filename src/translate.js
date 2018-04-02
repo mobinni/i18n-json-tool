@@ -1,55 +1,15 @@
 import fetch from "isomorphic-fetch";
+import { assocPath, curry, pipe, map } from "ramda";
+import {
+    traverse,
+    buildEndpoint,
+    findInterpolations,
+    replaceInterpolations,
+    revertInterpolations,
+    verifyISOCode
+} from "./utils";
 
-import { curry, pipe, map, extractKeys, flatten, merge } from "./utils";
-import { isoCodes } from "./iso-codes";
-
-export const revertInterpolations = placeholder => ({
-    interpolations,
-    phrase
-}) => {
-    let originalPhrase = new String(phrase);
-    if (!interpolations || !interpolations.length) return phrase;
-    interpolations.map(({ value }) => {
-        originalPhrase = originalPhrase.replace(placeholder, () => value);
-    });
-    return originalPhrase;
-};
-
-export const replaceInterpolations = placeholder => ({
-    key,
-    interpolations,
-    phrase
-}) => {
-    let newPhrase = phrase.slice();
-    interpolations.map(({ value }) => {
-        newPhrase = newPhrase.replace(value, () => placeholder);
-    });
-    return { key, phrase: newPhrase, interpolations };
-};
-
-export const findInterpolations = regexp => ({ key, phrase }) => {
-    const regex = new RegExp(regexp);
-    const interpolations = [];
-    let match;
-    while ((match = regex.exec(phrase))) {
-        if (match) {
-            interpolations.push({ value: match[0], index: regex.lastIndex });
-        }
-    }
-    return {
-        key,
-        interpolations,
-        phrase
-    };
-};
-
-export const buildEndpoint = (apiKey, isoCode, phrase) =>
-    "https://translate.yandex.net/api/v1.5/tr.json/translate?" +
-    `lang=${isoCode}` +
-    `&key=${apiKey}` +
-    `&text=${encodeURIComponent(phrase)}`;
-
-export const translate = async ({ key, interpolations, url }) =>
+export const translate = async ({ path, interpolations, url }) =>
     await fetch(url, { method: "POST" })
         .then(res => res.json())
         .then(res => {
@@ -59,35 +19,35 @@ export const translate = async ({ key, interpolations, url }) =>
                 interpolations
             });
             return Promise.resolve({
-                [key]: original
+                path,
+                original
             });
         });
 
 const PLACEHOLDER = "$$$";
+
+export const constructUrl = ({ apiKey, isoCode }) => phrase =>
+    buildEndpoint(apiKey, isoCode, phrase);
+
 export default async ({ apiKey, isoCode, translations, regexp = "//g" }) => {
     if (!verifyISOCode(isoCode))
         return Promise.reject(new Error("Please supply a valid iso code"));
+    const constructUrlForPhrase = constructUrl({ apiKey, isoCode });
+    const translationMap = traverse(translations);
+    const promises = [];
+    translationMap
+        .map(findInterpolations(regexp))
+        .map(replaceInterpolations(PLACEHOLDER))
+        .forEach(({ path, phrase, interpolations }) => {
+            const url = constructUrlForPhrase(phrase);
+            promises.push(translate({ path, interpolations, url }));
+        });
 
-    const endpoints = pipe(
-        extractKeys,
-        map(key =>
-            pipe(
-                findInterpolations(regexp),
-                replaceInterpolations(PLACEHOLDER)
-            )({ key, phrase: translations[key] })
-        ),
-        map(({ key, phrase, interpolations }) => ({
-            key,
-            phrase,
-            interpolations,
-            url: buildEndpoint(apiKey, isoCode, phrase)
-        }))
-    )(translations);
-    return await Promise.all(
-        endpoints.map(async ({ key, url, interpolations }) => {
-            return await translate({ key, url, interpolations });
-        })
-    ).then(pipe(flatten, merge));
+    return await Promise.all(promises).then(translated => {
+        let translations = {};
+        translated.forEach(({ path, original }) => {
+            translations = assocPath(path, original, translations);
+        });
+        return translations;
+    });
 };
-
-export const verifyISOCode = code => !!isoCodes.find(iso => iso.code === code);

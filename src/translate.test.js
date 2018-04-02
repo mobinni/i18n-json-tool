@@ -1,12 +1,11 @@
 import environment from "dotenv";
-import { extractKeys } from "./utils";
-import translateAll, {
+import {
     verifyISOCode,
     buildEndpoint,
-    translate,
     findInterpolations,
     replaceInterpolations
-} from "./translate";
+} from "./utils";
+import translateAll, { translate } from "./translate";
 
 describe("Translation test suite", () => {
     let apiKey;
@@ -16,7 +15,15 @@ describe("Translation test suite", () => {
         key: "World",
         key2: "Soccer",
         key3: "Today is a nice day {{random}}",
-        difficult: "The {{number}} of winners = {{output}}"
+        deeply: {
+            nested: {
+                key: {
+                    sequence: "seq"
+                },
+                number: 1,
+                letters: "number"
+            }
+        }
     };
     beforeAll(() => {
         const config = environment.config();
@@ -28,9 +35,7 @@ describe("Translation test suite", () => {
         const env = config.parsed;
         apiKey = env.YANDEX_API_KEY;
     });
-    it("should extract the keys of a given object", () => {
-        expect(extractKeys(en)).toEqual(["key", "key2", "key3", "difficult"]);
-    });
+
     it("should verify if an iso code is valid", () => {
         expect(verifyISOCode(isoCode)).toEqual(true);
     });
@@ -39,8 +44,8 @@ describe("Translation test suite", () => {
     });
     it("should translate a string from yandex", async () => {
         expect(
-            translate({ key: "key", url: buildEndpoint(apiKey, "nl", en.key) })
-        ).resolves.toEqual({ key: "Wereld" });
+            translate({ path: "key", url: buildEndpoint(apiKey, "nl", en.key) })
+        ).resolves.toEqual({ original: "Wereld", path: "key" });
     });
 
     it("should translate a file from yandex", async () => {
@@ -50,14 +55,16 @@ describe("Translation test suite", () => {
             translations: en,
             regexp: /{{([^}]+?)}}/g
         });
-        expect(results).toEqual([
-            {
-                key: "Wereld",
-                key2: "Voetbal",
-                key3: "Vandaag is een mooie dag {{random}}",
-                difficult: "De {{number}} winnaars = {{output}}"
-            }
-        ]);
+        expect(results).toEqual({
+            deeply: {
+                nested: {
+                    key: { letters: "aantal", number: "1", sequence: "seq" }
+                }
+            },
+            key: "Wereld",
+            key2: "Voetbal",
+            key3: "Vandaag is een mooie dag {{random}}"
+        });
     });
     it("should find all instances of a regex-bound interface in a string", () => {
         expect(
