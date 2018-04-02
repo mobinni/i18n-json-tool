@@ -28,6 +28,7 @@ jobs:
           paths:
             - build/
             - src/
+            - lib/
             - cli.js
             - index.js
             - package.json
