@@ -28,7 +28,7 @@ Currently it supports:
 example execution
 
 ```
-translate ./example/en.json -i node -k <key> -r "{{([^}]+?)}}"
+translate ./example/en.json -i nl -k some_key -r "{{([^}]+?)}}"
 ```
 
 **Web Usage**
