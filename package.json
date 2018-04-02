@@ -8,7 +8,14 @@
     },
     "scripts": {
         "test": "jest",
-        "build": "webpack --config webpack.conf -p"
+        "build": "webpack --config webpack.conf -p",
+        "patch": "npm version patch",
+        "major": "npm version major",
+        "minor": "npm version minor",
+        "release": "git push --tags",
+        "release-patch": "npm run patch && npm run release",
+        "release-minor": "npm run minor && npm run release",
+        "release-major": "npm run major && npm run release"
     },
     "repository": {
         "type": "git",
