@@ -23,16 +23,16 @@ jobs:
       - run: echo "YANDEX_API_KEY=$YANDEX_API_KEY" >> .env  
       - run: yarn test
       - run: yarn build
+      - run: yarn build-cli
       - persist_to_workspace:
           root: ./
           paths:
             - build/
             - src/
             - lib/
+            - cli/
             - cli.js
-            - index.js
             - package.json
-            - .babelrc
   deploy:
     <<: *defaults
     steps:
