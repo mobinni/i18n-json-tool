@@ -1,9 +1,7 @@
-#!/usr/bin/env node
 const program = require("commander");
 const path = require("path");
 const fs = require("fs");
-
-const window = require("window-shim");
+import translate from "./src/translate";
 
 program
     .arguments("<file>")
@@ -11,17 +9,23 @@ program
     .option("-i, --iso <code>", "isoCode to translate to")
     .option("-r, --regexp <expression>", "regular expression to filter on")
     .action(function(file) {
-        const { key, iso, regexp = "//g" } = program;
-        if (program.key) throw new Error("No Yandex API key supplied");
-        if (program.iso)
-            throw new Error("No iso code to translate to supplied");
-
+        const { key: apiKey, iso: isoCode, regexp = "//g" } = program;
+        if (!apiKey) throw new Error("No Yandex API key supplied");
+        if (!isoCode) throw new Error("No iso code to translate to supplied");
         const filePath = path.normalize(file);
-        fs.readFile(filePath, "utf8", function(err, data) {
+        fs.readFile(filePath, "utf8", async function(err, data) {
             if (err) throw err;
-            const translate = require("./lib/library");
             const translations = JSON.parse(data);
-            translate(key, iso, translations, regexp);
+            const result = await translate({
+                apiKey,
+                isoCode,
+                translations,
+                regexp
+            });
+            fs.writeFile(
+                path.dirname(filePath) + path.join(`/${isoCode}.json`),
+                JSON.stringify(result)
+            );
         });
     })
     .parse(process.argv);

@@ -29,7 +29,7 @@ const PLACEHOLDER = "$$$";
 export const constructUrl = ({ apiKey, isoCode }) => phrase =>
     buildEndpoint(apiKey, isoCode, phrase);
 
-export default async ({ apiKey, isoCode, translations, regexp = "//g" }) => {
+export default async ({ apiKey, isoCode, translations, regexp = "" }) => {
     if (!verifyISOCode(isoCode))
         return Promise.reject(new Error("Please supply a valid iso code"));
     const constructUrlForPhrase = constructUrl({ apiKey, isoCode });

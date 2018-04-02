@@ -51,7 +51,7 @@ export const replaceInterpolations = placeholder => ({
 };
 
 export const findInterpolations = regexp => ({ phrase, ...other }) => {
-    const regex = new RegExp(regexp);
+    const regex = new RegExp(regexp.toString(), "g");
     const interpolations = [];
     let match;
     while ((match = regex.exec(phrase))) {
