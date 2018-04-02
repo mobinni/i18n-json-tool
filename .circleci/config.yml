@@ -1,9 +1,12 @@
 version: 2
+defaults: &defaults
+  working_directory: ~/repo
+  docker:
+    - image: circleci/node:9.0
+    
 jobs:
   build:
-    docker:
-      - image: circleci/node:9.0
-    working_directory: ~/repo
+    <<: *defaults
     steps:
       - checkout
       - restore_cache:
@@ -19,22 +22,30 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
       - run: echo "YANDEX_API_KEY=$YANDEX_API_KEY" >> .env  
       - run: yarn test
-    deploy:
-        filters:
-          only: /v[0-9]+(\.[0-9]+)*/
-        steps:
-        - attach_workspace:
-            at: ~/repo
-        - run:
-            name: Build version
-            command: yarn build
-            name: Authenticate with registry
-            command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-            name: Publish package
-            command: npm publish
+      - run: yarn build
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - build/
+            - src/
+            - cli.js
+            - index.js
+            - package.json
+  deploy:
+    <<: *defaults
+    steps:
+    - attach_workspace:
+        at: ~/repo
+    - run:
+        name: Authenticate with registry
+        command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+        name: Publish package
+        command: npm publish ./package.json
 workflows:
   version: 2
   build_and_deploy:
     jobs:
       - build
-      - deploy
+      - deploy:
+          requires:
+            - build
