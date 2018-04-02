@@ -68,7 +68,7 @@ describe("Translation test suite", () => {
     });
     it("should find all instances of a regex-bound interface in a string", () => {
         expect(
-            findInterpolations(/{{([^}]+?)}}/g)({
+            findInterpolations("{{([^}]+?)}}")({
                 key: "key",
                 phrase: "string with {{string}}"
             })
@@ -78,7 +78,7 @@ describe("Translation test suite", () => {
             phrase: "string with {{string}}"
         });
         expect(
-            findInterpolations(/{{([^}]+?)}}/g)({
+            findInterpolations("{{([^}]+?)}}")({
                 key: "key",
                 phrase: "{{thing}} string with {{string}}"
             })

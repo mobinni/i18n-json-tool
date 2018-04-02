@@ -7,9 +7,9 @@ export const verifyISOCode = code => !!isoCodes.find(iso => iso.code === code);
 export const traverse = obj => {
     const verify = obj => typeof obj === "string" || typeof obj === "number";
     const results = [];
-    (function loopKeys(obj, prevPath) {
+    function loopKeys(obj, prevPath) {
         const objKeys = keys(obj);
-        objKeys.map(k => {
+        objKeys.forEach(k => {
             let path = [];
             if (prevPath) path = prevPath;
             if (!verify(obj[k])) {
@@ -22,7 +22,8 @@ export const traverse = obj => {
                 phrase: obj[k]
             });
         });
-    })(obj);
+    }
+    loopKeys(obj);
     return results;
 };
 
