@@ -3,9 +3,6 @@
     "version": "0.0.12",
     "description": "Convert JSON i18n files via the yandex api for quick internationalization testing",
     "main": "lib/library.js",
-    "engines": {
-        "node": ">=9.0.0"
-    },
     "scripts": {
         "test": "jest",
         "build": "webpack --config webpack.conf -p",
@@ -34,9 +31,10 @@
     },
     "homepage": "https://github.com/mobinni/i18n-yandex-json#readme",
     "dependencies": {
-        "babel-register": "^6.26.0",
         "babel-plugin-transform-es2015-modules-umd": "^6.24.1",
         "babel-plugin-transform-object-rest-spread": "^6.26.0",
+        "babel-preset-es2015": "^6.24.1",
+        "babel-register": "^6.26.0",
         "commander": "^2.15.1",
         "isomorphic-fetch": "^2.2.1",
         "ramda": "^0.25.0"
