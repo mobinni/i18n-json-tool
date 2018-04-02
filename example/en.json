@@ -1,0 +1,7 @@
+{
+    "hello": "Hi, I'm a translation tool",
+    "cool": "I can handle {{complex}} regular expression cases",
+    "nested": {
+        "n1": "I can even handle nested strings"
+    }
+}
