@@ -17,7 +17,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+ssh://git@github.com/mobinni/i18n-yandex-json.git"
+        "url": "git+ssh://git@github.com/mobinni/i18n-json-tool.git"
     },
     "keywords": [
         "yandex",
@@ -28,9 +28,9 @@
     "author": "Mo Binni",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/mobinni/i18n-yandex-json/issues"
+        "url": "https://github.com/mobinni/i18n-json-tool/issues"
     },
-    "homepage": "https://github.com/mobinni/i18n-yandex-json#readme",
+    "homepage": "https://github.com/mobinni/i18n-json-tool#readme",
     "dependencies": {
         "commander": "^2.15.1",
         "isomorphic-fetch": "^2.2.1",
