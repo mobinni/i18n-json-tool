@@ -16,7 +16,7 @@ Currently it supports:
 
   Options:
     -s  --service <service>    google or yandex
-    -k, --key <key>            Yandex API key
+    -k, --key <key>            API key
     -i, --iso <code>           isoCode to translate to
     -r, --regexp <expression>  regular expression to filter interpolations
     -h, --help                 output usage information

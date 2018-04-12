@@ -7,7 +7,7 @@ const translate = require("./cli/translate").default;
 program
     .arguments("<file>")
     .option("-s, --service [google, yandex = default]", "Yandex API key")
-    .option("-k, --key <key>", "Yandex API key")
+    .option("-k, --key <key>", "API key")
     .option("-i, --iso <code>", "isoCode to translate to")
     .option("-r, --regexp <expression>", "regular expression to filter on")
     .action(function(file) {
