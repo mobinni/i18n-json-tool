@@ -6,11 +6,12 @@ const translate = require("./cli/translate").default;
 
 program
     .arguments("<file>")
+    .option("-s, --service [google, yandex = default]", "Yandex API key")
     .option("-k, --key <key>", "Yandex API key")
     .option("-i, --iso <code>", "isoCode to translate to")
     .option("-r, --regexp <expression>", "regular expression to filter on")
     .action(function(file) {
-        const { key: apiKey, iso: isoCode, regexp = "//g" } = program;
+        const { key: apiKey, iso: isoCode, regexp = "//g", service } = program;
         if (!apiKey) throw new Error("No Yandex API key supplied");
         if (!isoCode) throw new Error("No iso code to translate to supplied");
         const filePath = path.normalize(file);
@@ -21,9 +22,10 @@ program
                 apiKey,
                 isoCode,
                 translations,
-                regexp
+                regexp,
+                service
             });
-            
+
             fs.writeFile(
                 path.dirname(filePath) + path.join(`/${isoCode}.json`),
                 JSON.stringify(result)

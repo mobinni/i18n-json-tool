@@ -8,12 +8,11 @@ import {
     revertInterpolations,
     verifyISOCode
 } from "./utils";
+import { SERVICES, createFetchForService } from "./services";
 
-export const translate = async ({ path, interpolations, url }) =>
-    await fetch(url, { method: "POST" })
-        .then(res => res.json())
-        .then(res => {
-            const phrase = res.text.join();
+export const translate = async ({ path, interpolations, promise }) =>
+    await promise()
+        .then(phrase => {
             const original = revertInterpolations(PLACEHOLDER)({
                 phrase,
                 interpolations
@@ -26,21 +25,26 @@ export const translate = async ({ path, interpolations, url }) =>
 
 const PLACEHOLDER = "$$$";
 
-export const constructUrl = ({ apiKey, isoCode }) => phrase =>
-    buildEndpoint(apiKey, isoCode, phrase);
-
-export default async ({ apiKey, isoCode, translations, regexp = "" }) => {
-    if (!verifyISOCode(isoCode))
+export default async ({
+    apiKey,
+    isoCode,
+    translations,
+    regexp = "",
+    service = SERVICES.YANDEX
+}) => {
+    if (!verifyISOCode(isoCode)) {
         return Promise.reject(new Error("Please supply a valid iso code"));
-    const constructUrlForPhrase = constructUrl({ apiKey, isoCode });
+    }
+
     const translationMap = traverse(translations);
     const promises = [];
+    const createFetch = createFetchForService(service);
     translationMap
         .map(findInterpolations(regexp))
         .map(replaceInterpolations(PLACEHOLDER))
         .forEach(({ path, phrase, interpolations }) => {
-            const url = constructUrlForPhrase(phrase);
-            promises.push(translate({ path, interpolations, url }));
+            const promise = createFetch({ apiKey, isoCode, phrase });
+            promises.push(translate({ path, interpolations, promise }));
         });
 
     return await Promise.all(promises).then(translated =>

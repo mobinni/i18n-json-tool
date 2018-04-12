@@ -67,8 +67,3 @@ export const findInterpolations = regexp => ({ phrase, ...other }) => {
     };
 };
 
-export const buildEndpoint = (apiKey, isoCode, phrase) =>
-    "https://translate.yandex.net/api/v1.5/tr.json/translate?" +
-    `lang=${isoCode}` +
-    `&key=${apiKey}` +
-    `&text=${encodeURIComponent(phrase)}`;
