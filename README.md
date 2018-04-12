@@ -5,6 +5,7 @@ i18n-translate-tool was built out of the necessity to leverage internationalizat
 Currently it supports:
 
 *   Yandex Translation API
+*   Google Translate
 
 # Examples
 
@@ -14,7 +15,7 @@ Currently it supports:
   Usage: translate [options] <file>
 
   Options:
-
+    -s  --service <service>    google or yandex
     -k, --key <key>            Yandex API key
     -i, --iso <code>           isoCode to translate to
     -r, --regexp <expression>  regular expression to filter interpolations
@@ -37,7 +38,8 @@ translate({
     apiKey,
     isoCode: "nl",
     translations,
-    regexp // optional
+    service, // defaults to yandex (optional)
+    regexp // defaults to nothing (optional)
 }).then(results => console.log(results));
 ```
 # Roadmap
