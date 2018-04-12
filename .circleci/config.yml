@@ -33,6 +33,7 @@ jobs:
             - cli/
             - cli.js
             - package.json
+            - README.md
   deploy:
     <<: *defaults
     steps:

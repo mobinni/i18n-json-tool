@@ -1,5 +1,5 @@
 import fetch from "isomorphic-fetch";
-import { assocPath, curry, pipe, map } from "ramda";
+import { concat, curry, pipe, reduce, assocPath, mergeDeepWith } from "ramda";
 import {
     traverse,
     buildEndpoint,
@@ -43,11 +43,11 @@ export default async ({ apiKey, isoCode, translations, regexp = "" }) => {
             promises.push(translate({ path, interpolations, url }));
         });
 
-    return await Promise.all(promises).then(translated => {
-        let translations = {};
-        translated.forEach(({ path, original }) => {
-            translations = assocPath(path, original, translations);
-        });
-        return translations;
-    });
+    return await Promise.all(promises).then(translated =>
+        reduce(
+            (acc, { path, original }) => assocPath(path, original, acc),
+            {},
+            translated
+        )
+    );
 };
