@@ -1,6 +1,27 @@
 export const SERVICES = {
     GOOGLE: "google",
-    YANDEX: "yandex"
+    YANDEX: "yandex",
+    BING: "bing"
+};
+
+export const buildBingFetch = (apiKey, isoCode, phrase) => () => {
+    const parser = new DOMParser();
+    return fetch(
+        `https://api.microsofttranslator.com/V2/Http.svc/Translate?text=${encodeURIComponent(
+            phrase
+        )}&to=${isoCode}`,
+        {
+            headers: {
+                "Ocp-Apim-Subscription-Key": apiKey
+            }
+        }
+    )
+        .then(res => res.text())
+        .then(res => {
+            const xmlDoc = parser.parseFromString(res, "text/xml");
+            const string = xmlDoc.getElementsByTagName("string")[0].childNodes[0].nodeValue;
+            return string;
+        });
 };
 
 export const buildGoogleFetch = (apiKey, isoCode, phrase) => () =>
@@ -29,6 +50,7 @@ export const buildYandexFetch = (apiKey, isoCode, phrase) => () =>
         .then(res => res.text.join());
 
 const translationServices = {
+    [SERVICES.BING]: buildBingFetch,
     [SERVICES.GOOGLE]: buildGoogleFetch,
     [SERVICES.YANDEX]: buildYandexFetch
 };

@@ -123,7 +123,7 @@ describe("Translation test suite", () => {
             apiKey = env.GOOGLE_API_KEY;
         });
 
-        it("should translate a file from yandex", async () => {
+        it("should translate a file from google", async () => {
             const results = await translateAll({
                 apiKey,
                 isoCode: "nl",
@@ -140,6 +140,39 @@ describe("Translation test suite", () => {
                 key: "Wereld",
                 key2: "Voetbal",
                 key3: "Vandaag is een mooie dag {{random}}"
+            });
+        });
+    });
+
+    describe.skip("Bing translate suite", () => {
+        beforeAll(() => {
+            const config = environment.config();
+            if (config.error) {
+                throw new Error(
+                    "Please supply an env file with the GOOGLE_API_KEY to test"
+                );
+            }
+            const env = config.parsed;
+            apiKey = env.BING_API_KEY;
+        });
+
+        it("should translate a file from bing", async () => {
+            const results = await translateAll({
+                apiKey,
+                isoCode: "es",
+                translations: en,
+                regexp: /{{([^}]+?)}}/g,
+                service: "bing"
+            });
+            expect(results).toEqual({
+                deeply: {
+                    nested: {
+                        key: { letters: "número", number: "1", sequence: "Seq" }
+                    }
+                },
+                key: "Mundo",
+                key2: "Fútbol",
+                key3: "Hoy es un día bonito {{random}}"
             });
         });
     });

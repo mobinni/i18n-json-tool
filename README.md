@@ -6,6 +6,7 @@ Currently it supports:
 
 *   Yandex Translation API
 *   Google Translate
+*   Bing Translate
 
 # Examples
 
@@ -15,7 +16,7 @@ Currently it supports:
   Usage: translate [options] <file>
 
   Options:
-    -s, --service <service>    google or yandex
+    -s, --service <service>    google, yandex or bing
     -k, --key <key>            API key
     -i, --iso <code>           isoCode to translate to
     -r, --regexp <expression>  regular expression to filter interpolations
@@ -43,7 +44,6 @@ translate({
 }).then(results => console.log(results));
 ```
 # Roadmap
-- Add support for google translate API
 - Create website example for translating through an interface
 
 # Contributing
