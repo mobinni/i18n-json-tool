@@ -144,12 +144,13 @@ describe("Translation test suite", () => {
         });
     });
 
+    // tests skipped for rate limiting
     describe.skip("Bing translate suite", () => {
         beforeAll(() => {
             const config = environment.config();
             if (config.error) {
                 throw new Error(
-                    "Please supply an env file with the GOOGLE_API_KEY to test"
+                    "Please supply an env file with the BING_API_KEY to test"
                 );
             }
             const env = config.parsed;
