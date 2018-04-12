@@ -26,7 +26,7 @@ export const buildYandexFetch = (apiKey, isoCode, phrase) => () =>
         { method: "POST" }
     )
         .then(res => res.json())
-        .then(res => Promise.resolve(res.text.join()));
+        .then(res => res.text.join());
 
 const translationServices = {
     [SERVICES.GOOGLE]: buildGoogleFetch,
