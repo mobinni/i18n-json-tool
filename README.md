@@ -15,7 +15,7 @@ Currently it supports:
   Usage: translate [options] <file>
 
   Options:
-    -s  --service <service>    google or yandex
+    -s, --service <service>    google or yandex
     -k, --key <key>            API key
     -i, --iso <code>           isoCode to translate to
     -r, --regexp <expression>  regular expression to filter interpolations
