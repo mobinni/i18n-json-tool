@@ -1,7 +1,7 @@
 /*
  * Credits to https://gist.github.com/jrnk/8eb57b065ea0b098d571
  */
-export const isoCodes = [
+module.exports.isoCodes = [
     {
         "code": "ab",
         "name": "Abkhaz"

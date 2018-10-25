@@ -2,7 +2,7 @@
 const program = require("commander");
 const path = require("path");
 const fs = require("fs");
-const translate = require("./cli/translate").default;
+const translate = require("./src/translate");
 
 program
     .arguments("<file>")

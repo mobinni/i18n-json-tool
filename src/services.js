@@ -1,10 +1,12 @@
-export const SERVICES = {
+const SERVICES = {
     GOOGLE: "google",
     YANDEX: "yandex",
     BING: "bing"
 };
 
-export const buildBingFetch = (apiKey, isoCode, phrase) => () => {
+module.exports.SERVICES = SERVICES;
+
+const buildBingFetch = (apiKey, isoCode, phrase) => () => {
     const parser = new DOMParser();
     return fetch(
         `https://api.microsofttranslator.com/V2/Http.svc/Translate?text=${encodeURIComponent(
@@ -24,7 +26,9 @@ export const buildBingFetch = (apiKey, isoCode, phrase) => () => {
         });
 };
 
-export const buildGoogleFetch = (apiKey, isoCode, phrase) => () =>
+module.exports.buildBingFetch = buildBingFetch;
+
+const buildGoogleFetch = (apiKey, isoCode, phrase) => () =>
     fetch(
         `https://translation.googleapis.com/language/translate/v2?key=${apiKey}&q=${encodeURIComponent(
             phrase
@@ -39,7 +43,9 @@ export const buildGoogleFetch = (apiKey, isoCode, phrase) => () =>
         .then(res => res.json())
         .then(res => res.data.translations[0].translatedText);
 
-export const buildYandexFetch = (apiKey, isoCode, phrase) => () =>
+module.exports.buildGoogleFetch = buildGoogleFetch;
+
+const buildYandexFetch = (apiKey, isoCode, phrase) => () =>
     fetch(
         `https://translate.yandex.net/api/v1.5/tr.json/translate?lang=${isoCode}` +
             `&key=${apiKey}` +
@@ -49,11 +55,15 @@ export const buildYandexFetch = (apiKey, isoCode, phrase) => () =>
         .then(res => res.json())
         .then(res => res.text.join());
 
+module.exports.buildYandexFetch = buildYandexFetch;
+
 const translationServices = {
     [SERVICES.BING]: buildBingFetch,
     [SERVICES.GOOGLE]: buildGoogleFetch,
     [SERVICES.YANDEX]: buildYandexFetch
 };
 
-export const createFetchForService = service => ({ apiKey, isoCode, phrase }) =>
+const createFetchForService = service => ({ apiKey, isoCode, phrase }) =>
     translationServices[service](apiKey, isoCode, phrase);
+
+module.exports.createFetchForService = createFetchForService;

@@ -1,31 +1,31 @@
-import fetch from "isomorphic-fetch";
-import { concat, curry, pipe, reduce, assocPath, mergeDeepWith } from "ramda";
-import {
+const fetch = require("isomorphic-fetch");
+const { reduce, assocPath } = require("ramda");
+const {
     traverse,
-    buildEndpoint,
     findInterpolations,
     replaceInterpolations,
     revertInterpolations,
     verifyISOCode
-} from "./utils";
-import { SERVICES, createFetchForService } from "./services";
+} = require("./utils");
+const { SERVICES, createFetchForService } = require("./services");
 
-export const translate = async ({ path, interpolations, promise }) =>
-    await promise()
-        .then(phrase => {
-            const original = revertInterpolations(PLACEHOLDER)({
-                phrase,
-                interpolations
-            });
-            return Promise.resolve({
-                path,
-                original
-            });
+const translate = async ({ path, interpolations, promise }) =>
+    await promise().then(phrase => {
+        const original = revertInterpolations(PLACEHOLDER)({
+            phrase,
+            interpolations
         });
+        return Promise.resolve({
+            path,
+            original
+        });
+    });
+
+module.exports.translate = translate;
 
 const PLACEHOLDER = "$$$";
 
-export default async ({
+module.exports = async ({
     apiKey,
     isoCode,
     translations,

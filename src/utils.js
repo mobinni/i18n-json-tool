@@ -1,21 +1,22 @@
-import { keys } from "ramda";
+const { keys } = require("ramda");
 
-import { isoCodes } from "./iso-codes";
+const { isoCodes } = require("./iso-codes");
 
-export const verifyISOCode = code => !!isoCodes.find(iso => iso.code === code);
+module.exports.verifyISOCode = code =>
+    !!isoCodes.find(iso => iso.code === code);
 
-export const traverse = obj => {
+module.exports.traverse = obj => {
     const verify = obj => typeof obj === "string" || typeof obj === "number";
     const results = [];
     function loopKeys(obj, prevPath) {
         const objKeys = keys(obj);
         objKeys.forEach(k => {
             let path = [];
-            if (prevPath) path = prevPath;
             if (!verify(obj[k])) {
                 path.push(k);
                 return loopKeys(obj[k], path);
             }
+            if (prevPath) path = prevPath;
 
             results.push({
                 path: [].concat(path, k),
@@ -27,7 +28,7 @@ export const traverse = obj => {
     return results;
 };
 
-export const revertInterpolations = placeholder => ({
+module.exports.revertInterpolations = placeholder => ({
     interpolations,
     phrase
 }) => {
@@ -39,7 +40,7 @@ export const revertInterpolations = placeholder => ({
     return originalPhrase;
 };
 
-export const replaceInterpolations = placeholder => ({
+module.exports.replaceInterpolations = placeholder => ({
     interpolations,
     phrase,
     ...other
@@ -51,7 +52,7 @@ export const replaceInterpolations = placeholder => ({
     return { phrase: newPhrase.toString(), interpolations, ...other };
 };
 
-export const findInterpolations = regexp => ({ phrase, ...other }) => {
+module.exports.findInterpolations = regexp => ({ phrase, ...other }) => {
     const regex = new RegExp(regexp.toString(), "g");
     const interpolations = [];
     let match;
@@ -66,4 +67,3 @@ export const findInterpolations = regexp => ({ phrase, ...other }) => {
         ...other
     };
 };
-
