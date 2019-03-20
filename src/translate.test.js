@@ -134,7 +134,9 @@ describe("Translation test suite", () => {
             expect(results).toEqual({
                 deeply: {
                     nested: {
-                        key: { letters: "aantal", number: "1", sequence: "seq" }
+                        key: { sequence: "seq" },
+                        letters: "aantal",
+                        number: "1"
                     }
                 },
                 key: "Wereld",
