@@ -1,27 +1,30 @@
-const { keys } = require("ramda");
+const { keys, path: pathOf } = require("ramda");
 
 const { isoCodes } = require("./iso-codes");
 
 module.exports.verifyISOCode = code =>
     !!isoCodes.find(iso => iso.code === code);
 
-module.exports.traverse = obj => {
-    const verify = obj => typeof obj === "string" || typeof obj === "number";
-    const results = [];
-    function loopKeys(obj, prevPath) {
-        const objKeys = keys(obj);
-        objKeys.forEach(k => {
-            let path = [];
-            if (prevPath) path = prevPath;
-            if (!verify(obj[k])) {
-                path.push(k);
-                return loopKeys(obj[k], path);
-            }
+const verify = obj => typeof obj === "string" || typeof obj === "number";
 
+module.exports.traverse = obj => {
+    const results = [];
+
+    function loopKeys(obj, prevPath = []) {
+        const objKeys = keys(obj);
+        return objKeys.map(k => {
+            console.log(k, obj[k]);
+            let path = [];
+            if (!verify(obj[k])) {
+                if (prevPath) path = prevPath;
+                path.push(k);
+                loopKeys(obj[k], path);
+            }
             results.push({
-                path: [].concat(path, k),
+                path: [].concat(prevPath, k),
                 phrase: obj[k]
             });
+            path.pop();
         });
     }
     loopKeys(obj);
