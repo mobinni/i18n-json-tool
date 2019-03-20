@@ -4,7 +4,7 @@ import {
     findInterpolations,
     replaceInterpolations
 } from "./utils";
-import translateAll, { translate } from "./translate";
+import translateAll from "./translate";
 
 describe("Translation test suite", () => {
     let apiKey;

@@ -1,5 +1,6 @@
-const fetch = require("isomorphic-fetch");
+require("isomorphic-fetch");
 const { reduce, assocPath } = require("ramda");
+
 const {
     traverse,
     findInterpolations,
@@ -9,23 +10,25 @@ const {
 } = require("./utils");
 const { SERVICES, createFetchForService } = require("./services");
 
-const translate = async ({ path, interpolations, promise }) =>
-    await promise().then(phrase => {
-        const original = revertInterpolations(PLACEHOLDER)({
-            phrase,
-            interpolations
-        });
-        return Promise.resolve({
-            path,
-            original
-        });
-    });
-
-module.exports.translate = translate;
-
 const PLACEHOLDER = "$$$";
 
-module.exports = async ({
+const translatePhrase = async ({ path, interpolations, promise }) =>
+    await promise()
+        .then(phrase => {
+            const original = revertInterpolations(PLACEHOLDER)({
+                phrase,
+                interpolations
+            });
+            return Promise.resolve({
+                path,
+                original
+            });
+        })
+        .catch(e => {
+            throw new Error(e);
+        });
+
+const translateFile = async ({
     apiKey,
     isoCode,
     translations,
@@ -37,14 +40,14 @@ module.exports = async ({
     }
 
     const translationMap = traverse(translations);
-    const promises = [];
     const createFetch = createFetchForService(service);
-    translationMap
+
+    const promises = translationMap
         .map(findInterpolations(regexp))
         .map(replaceInterpolations(PLACEHOLDER))
-        .forEach(({ path, phrase, interpolations }) => {
+        .map(({ path, phrase, interpolations }) => {
             const promise = createFetch({ apiKey, isoCode, phrase });
-            promises.push(translate({ path, interpolations, promise }));
+            return translatePhrase({ path, interpolations, promise });
         });
 
     return await Promise.all(promises).then(translated =>
@@ -55,3 +58,6 @@ module.exports = async ({
         )
     );
 };
+
+module.exports.translate = translatePhrase;
+module.exports = translateFile;

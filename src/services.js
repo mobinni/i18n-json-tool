@@ -21,7 +21,8 @@ const buildBingFetch = (apiKey, isoCode, phrase) => () => {
         .then(res => res.text())
         .then(res => {
             const xmlDoc = parser.parseFromString(res, "text/xml");
-            const string = xmlDoc.getElementsByTagName("string")[0].childNodes[0].nodeValue;
+            const string = xmlDoc.getElementsByTagName("string")[0]
+                .childNodes[0].nodeValue;
             return string;
         });
 };

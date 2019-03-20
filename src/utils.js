@@ -12,11 +12,11 @@ module.exports.traverse = obj => {
         const objKeys = keys(obj);
         objKeys.forEach(k => {
             let path = [];
+            if (prevPath) path = prevPath;
             if (!verify(obj[k])) {
                 path.push(k);
                 return loopKeys(obj[k], path);
             }
-            if (prevPath) path = prevPath;
 
             results.push({
                 path: [].concat(path, k),
@@ -32,7 +32,7 @@ module.exports.revertInterpolations = placeholder => ({
     interpolations,
     phrase
 }) => {
-    let originalPhrase = new String(phrase);
+    let originalPhrase = phrase;
     if (!interpolations || !interpolations.length) return phrase;
     interpolations.map(({ value }) => {
         originalPhrase = originalPhrase.replace(placeholder, () => value);
@@ -45,7 +45,7 @@ module.exports.replaceInterpolations = placeholder => ({
     phrase,
     ...other
 }) => {
-    let newPhrase = new String(phrase);
+    let newPhrase = phrase;
     interpolations.map(({ value }) => {
         newPhrase = newPhrase.replace(value, () => placeholder);
     });
