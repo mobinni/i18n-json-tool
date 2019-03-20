@@ -13,17 +13,17 @@ module.exports.traverse = obj => {
     function loopKeys(obj, prevPath = []) {
         const objKeys = keys(obj);
         return objKeys.map(k => {
-            console.log(k, obj[k]);
             let path = [];
             if (!verify(obj[k])) {
                 if (prevPath) path = prevPath;
                 path.push(k);
                 loopKeys(obj[k], path);
+            } else {
+                results.push({
+                    path: [...prevPath, k],
+                    phrase: obj[k]
+                });
             }
-            results.push({
-                path: [].concat(prevPath, k),
-                phrase: obj[k]
-            });
             path.pop();
         });
     }
