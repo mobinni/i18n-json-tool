@@ -1,34 +1,30 @@
-const { keys, path: pathOf } = require("ramda");
+const { chain, type, toPairs, fromPairs, map, keys } = require("ramda");
 
 const { isoCodes } = require("./iso-codes");
 
 module.exports.verifyISOCode = code =>
     !!isoCodes.find(iso => iso.code === code);
 
-const verify = obj => typeof obj === "string" || typeof obj === "number";
+// https://github.com/ramda/ramda/wiki/Cookbook#flatten-a-nested-object-into-dot-separated-key--value-pairs
+const flattenObj = obj => {
+    const go = obj_ =>
+        chain(([k, v]) => {
+            if (type(v) === "Object" || type(v) === "Array") {
+                return map(([k_, v_]) => [`${k}.${k_}`, v_], go(v));
+            } else {
+                return [[k, v]];
+            }
+        }, toPairs(obj_));
+
+    return fromPairs(go(obj));
+};
 
 module.exports.traverse = obj => {
-    const results = [];
-
-    function loopKeys(obj, prevPath = []) {
-        const objKeys = keys(obj);
-        return objKeys.map(k => {
-            let path = [];
-            if (!verify(obj[k])) {
-                if (prevPath) path = prevPath;
-                path.push(k);
-                loopKeys(obj[k], path);
-            } else {
-                results.push({
-                    path: [...prevPath, k],
-                    phrase: obj[k]
-                });
-            }
-            path.pop();
-        });
-    }
-    loopKeys(obj);
-    return results;
+    const flattened = flattenObj(obj);
+    return keys(flattened).map(k => ({
+        path: k.split("."),
+        phrase: flattened[k]
+    }));
 };
 
 module.exports.revertInterpolations = placeholder => ({

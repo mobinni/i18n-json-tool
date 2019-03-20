@@ -29,6 +29,17 @@ example execution
 translate ./example/en.json -i nl -k some_key -r "{{([^}]+?)}}"
 ```
 
+In the above example following string will be translated:
+```
+"n2": "with {{some}} regexs in it"
+```
+to dutch
+```
+ "n2": "met {{some}} regexs in het"
+```
+
+As you can see the regex allows interpolations to stay intact while translating.
+
 **Web Usage**
 ```javascript
 import translate from "i18n-json-tool";

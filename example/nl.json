@@ -1,9 +1,9 @@
 {
     "hello": "Hallo, ik ben een vertaling tool",
-    "cool": "Ik kan omgaan met {{complexe}} reguliere expressie gevallen",
+    "cool": "Ik kan omgaan met {{complex}} reguliere expressie gevallen",
     "nested": {
         "n1": "Ik kan zelfs geneste strings",
-        "n2": "met {{aantal}} regexs in het"
+        "n2": "met {{some}} regexs in het"
     },
     "months": {
         "full": {
