@@ -48,8 +48,8 @@
         "dotenv": "^5.0.1",
         "jest": "^22.4.3",
         "prettier": "^1.16.4",
-        "webpack": "^4.3.0",
-        "webpack-cli": "^2.0.13"
+        "webpack": "^4.29.6",
+        "webpack-cli": "^3.3.0"
     },
     "jest": {
         "testURL": "http://localhost/"
